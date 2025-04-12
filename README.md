@@ -1,54 +1,88 @@
-# React + TypeScript + Vite
+# Web Playground Lab
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A personal playground for experimenting with modern web-based technologies. This repository serves as a single-page static web application where each experiment is accessible via its own route.
 
-Currently, two official plugins are available:
+## Overview
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+This repository is designed to be a living notebook for frontend R&D, providing an isolated environment for testing out new web APIs and JavaScript libraries, creating visual representations of algorithms and data, and improving hands-on understanding of browser capabilities and frontend performance.
 
-## Expanding the ESLint configuration
+## Experiments
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+The following experiments are currently available:
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+- **Fullscreen API Demo** (`/fullscreen`) - Explore the browser's Fullscreen API with a simple interactive demo.
+- **D3.js Bar Chart** (`/d3-bar-chart`) - Interactive data visualization using the D3.js library.
+- **DFS Algorithm Visualization** (`/dfs-visualization`) - Visual representation of the Depth-First Search graph traversal algorithm.
+
+## Tech Stack
+
+- **Frontend Framework:** React
+- **Dev Server and Bundler:** Vite
+- **Styling:** Tailwind CSS
+- **Package Manager:** pnpm
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js (v18 or higher recommended)
+- pnpm
+
+### Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/bonyuta0204/web-playground-lab.git
+cd web-playground-lab
+
+# Install dependencies
+pnpm install
+
+# Start the development server
+pnpm dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### Development
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+The development server will start at `http://localhost:5173` by default.
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
+### Building for Production
+
+```bash
+pnpm build
 ```
+
+This will generate static files in the `dist` directory that can be deployed to any static hosting service like GitHub Pages or Vercel.
+
+## Project Structure
+
+```
+web-playground-lab/
+├── public/                  # Static assets
+├── src/
+│   ├── components/          # Shared React components
+│   ├── experiments/         # Each experiment in its own file
+│   │   ├── FullscreenDemo.tsx
+│   │   ├── D3BarChart.tsx
+│   │   └── DFSVisualization.tsx
+│   ├── App.tsx             # Routing and layout
+│   └── main.tsx            # Entry point
+├── index.html              # HTML shell
+├── tailwind.config.js      # Tailwind configuration
+├── postcss.config.js       # For Tailwind
+├── vite.config.ts          # Vite configuration
+└── package.json
+```
+
+## Adding New Experiments
+
+To add a new experiment:
+
+1. Create a new component in the `src/experiments/` directory
+2. Add a new route in `src/App.tsx`
+3. Add the experiment to the navigation in `src/components/Layout.tsx`
+4. Add the experiment card to the home page in `src/components/Home.tsx`
+
+## License
+
+This project is open source and available under the [MIT License](LICENSE).
