@@ -1,5 +1,5 @@
-import { ReactNode } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { ReactNode } from "react";
+import { Link, useLocation } from "react-router-dom";
 
 interface LayoutProps {
   children: ReactNode;
@@ -15,10 +15,11 @@ const Layout = ({ children }: LayoutProps) => {
   const currentPath = location.pathname;
 
   const navItems: NavItem[] = [
-    { path: '/', label: 'Home' },
-    { path: '/fullscreen', label: 'Fullscreen Demo' },
-    { path: '/d3-bar-chart', label: 'D3 Bar Chart' },
-    { path: '/dfs-visualization', label: 'DFS Visualization' },
+    { path: "/", label: "Home" },
+    { path: "/fullscreen", label: "Fullscreen Demo" },
+    { path: "/d3-bar-chart", label: "D3 Bar Chart" },
+    { path: "/dfs-visualization", label: "DFS Visualization" },
+    { path: "/sort-visualization", label: "Sort Visualization" },
   ];
 
   return (
@@ -33,7 +34,9 @@ const Layout = ({ children }: LayoutProps) => {
                 <li key={item.path}>
                   <Link
                     to={item.path}
-                    className={`block py-2 px-4 rounded hover:bg-indigo-700 transition-colors ${currentPath === item.path ? 'bg-indigo-700 font-bold' : ''}`}
+                    className={`block py-2 px-4 rounded hover:bg-indigo-700 transition-colors ${
+                      currentPath === item.path ? "bg-indigo-700 font-bold" : ""
+                    }`}
                   >
                     {item.label}
                   </Link>
@@ -52,7 +55,9 @@ const Layout = ({ children }: LayoutProps) => {
         <footer className="bg-gray-800 text-white py-6">
           <div className="container mx-auto px-4 text-center">
             <p>Web Playground Lab - A personal frontend experiment space</p>
-            <p className="text-sm mt-2">Built with React, Vite, and Tailwind CSS</p>
+            <p className="text-sm mt-2">
+              Built with React, Vite, and Tailwind CSS
+            </p>
           </div>
         </footer>
       </div>
