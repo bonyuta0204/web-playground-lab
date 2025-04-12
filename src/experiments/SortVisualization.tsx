@@ -28,6 +28,147 @@ const generateBubbleSortSteps = (arr: number[]): SortSteps => {
   return steps;
 };
 
+// Selection sort algorithm implementation
+const generateSelectionSortSteps = (arr: number[]): SortSteps => {
+  const steps: SortSteps = [];
+  const tempArray = [...arr];
+
+  // Add initial state
+  steps.push([...tempArray]);
+
+  for (let i = 0; i < tempArray.length - 1; i++) {
+    let minIndex = i;
+
+    for (let j = i + 1; j < tempArray.length; j++) {
+      if (tempArray[j] < tempArray[minIndex]) {
+        minIndex = j;
+      }
+    }
+
+    if (minIndex !== i) {
+      // Swap elements
+      const temp = tempArray[i];
+      tempArray[i] = tempArray[minIndex];
+      tempArray[minIndex] = temp;
+
+      // Add this step to our steps array
+      steps.push([...tempArray]);
+    }
+  }
+
+  return steps;
+};
+
+// Insertion sort algorithm implementation
+const generateInsertionSortSteps = (arr: number[]): SortSteps => {
+  const steps: SortSteps = [];
+  const tempArray = [...arr];
+
+  // Add initial state
+  steps.push([...tempArray]);
+
+  for (let i = 1; i < tempArray.length; i++) {
+    const key = tempArray[i];
+    let j = i - 1;
+
+    while (j >= 0 && tempArray[j] > key) {
+      tempArray[j + 1] = tempArray[j];
+      j--;
+      
+      // Add intermediate step
+      steps.push([...tempArray]);
+    }
+
+    tempArray[j + 1] = key;
+    
+    // Add this step to our steps array if we haven't already
+    if (j + 1 !== i) {
+      steps.push([...tempArray]);
+    }
+  }
+
+  return steps;
+};
+
+// Quick sort algorithm implementation
+const generateQuickSortSteps = (arr: number[]): SortSteps => {
+  const steps: SortSteps = [];
+  const tempArray = [...arr];
+
+  // Add initial state
+  steps.push([...tempArray]);
+
+  const quickSort = (array: number[], low: number, high: number) => {
+    if (low < high) {
+      const pivotIndex = partition(array, low, high);
+      quickSort(array, low, pivotIndex - 1);
+      quickSort(array, pivotIndex + 1, high);
+    }
+  };
+
+  const partition = (array: number[], low: number, high: number): number => {
+    const pivot = array[high];
+    let i = low - 1;
+
+    for (let j = low; j < high; j++) {
+      if (array[j] <= pivot) {
+        i++;
+        // Swap elements
+        const temp = array[i];
+        array[i] = array[j];
+        array[j] = temp;
+
+        // Add this step to our steps array
+        steps.push([...array]);
+      }
+    }
+
+    // Swap pivot element
+    const temp = array[i + 1];
+    array[i + 1] = array[high];
+    array[high] = temp;
+
+    // Add this step to our steps array
+    steps.push([...array]);
+
+    return i + 1;
+  };
+
+  quickSort(tempArray, 0, tempArray.length - 1);
+  return steps;
+};
+
+// Define sorting algorithm type
+type SortAlgorithm = {
+  name: string;
+  function: (arr: number[]) => SortSteps;
+  description: string;
+};
+
+// Define available sorting algorithms
+const sortingAlgorithms: SortAlgorithm[] = [
+  {
+    name: "バブルソート",
+    function: generateBubbleSortSteps,
+    description: "隣接する要素を比較し、順序が正しくない場合は入れ替える単純なアルゴリズム",
+  },
+  {
+    name: "選択ソート",
+    function: generateSelectionSortSteps,
+    description: "未ソート部分から最小の要素を選択し、ソート済み部分の末尾に配置するアルゴリズム",
+  },
+  {
+    name: "挿入ソート",
+    function: generateInsertionSortSteps,
+    description: "ソート済み部分に新しい要素を適切な位置に挿入していくアルゴリズム",
+  },
+  {
+    name: "クイックソート",
+    function: generateQuickSortSteps,
+    description: "分割統治法を用いた高速なソートアルゴリズム",
+  },
+];
+
 // generate random array
 const buildRandomArray = (size: number) => {
   const array = [];
@@ -43,11 +184,13 @@ const SortVisualization = () => {
   const [currentStepIndex, setCurrentStepIndex] = useState<number>(-1);
   const [isSorting, setIsSorting] = useState<boolean>(false);
   const [sortingSpeed, setSortingSpeed] = useState<number>(200); // milliseconds
+  const [selectedAlgorithm, setSelectedAlgorithm] = useState<number>(0); // Default to bubble sort
+  const [arraySize, setArraySize] = useState<number>(50); // Default array size
 
   // Start the sorting visualization
   const startSorting = () => {
     console.log("Starting sorting visualization");
-    const steps = generateBubbleSortSteps(buildRandomArray(50));
+    const steps = sortingAlgorithms[selectedAlgorithm].function(buildRandomArray(arraySize));
     setSortSteps(steps);
     setCurrentStepIndex(0);
     setIsSorting(true);
@@ -164,7 +307,45 @@ const SortVisualization = () => {
     <div className="p-4">
       <h1 className="text-3xl font-bold mb-4">Sort Visualization</h1>
       <div className="flex flex-col items-center p-6 bg-gray-100 rounded-lg">
-        <h2 className="text-2xl font-bold mb-4">バブルソートの可視化</h2>
+        <h2 className="text-2xl font-bold mb-4">
+          {sortingAlgorithms[selectedAlgorithm].name}の可視化
+        </h2>
+
+        <div className="w-full mb-6">
+          <div className="bg-white p-4 rounded-lg shadow-md mb-4">
+            <h3 className="text-lg font-semibold mb-2">アルゴリズム選択</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {sortingAlgorithms.map((algorithm, index) => (
+                <div 
+                  key={index} 
+                  onClick={() => !isSorting && setSelectedAlgorithm(index)}
+                  className={`p-3 rounded-md cursor-pointer transition ${selectedAlgorithm === index 
+                    ? 'bg-blue-500 text-white' 
+                    : 'bg-gray-200 hover:bg-gray-300'} ${
+                    isSorting ? 'opacity-50 cursor-not-allowed' : ''
+                  }`}
+                >
+                  <div className="font-bold">{algorithm.name}</div>
+                  <div className="text-sm">{algorithm.description}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="bg-white p-4 rounded-lg shadow-md mb-4">
+            <h3 className="text-lg font-semibold mb-2">配列サイズ: {arraySize}</h3>
+            <input
+              type="range"
+              min="10"
+              max="100"
+              step="5"
+              value={arraySize}
+              onChange={(e) => !isSorting && setArraySize(parseInt(e.target.value))}
+              disabled={isSorting}
+              className={`w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer ${isSorting ? 'opacity-50' : ''}`}
+            />
+          </div>
+        </div>
 
         <div className="mb-6 bg-white p-4 rounded-lg shadow-md w-full">
           <svg ref={svgRef} className="w-full"></svg>
@@ -173,7 +354,7 @@ const SortVisualization = () => {
         <div className="flex flex-wrap gap-4 mb-6">
           <button
             onClick={startSorting}
-            className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition"
+            className={`px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition ${isSorting ? 'opacity-50 cursor-not-allowed' : ''}`}
             disabled={isSorting}
           >
             ソート開始
@@ -190,7 +371,7 @@ const SortVisualization = () => {
         <div className="flex flex-wrap gap-4 mb-6">
           <button
             onClick={prevStep}
-            className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition"
+            className={`px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition ${(currentStepIndex <= 0 || isSorting) ? 'opacity-50 cursor-not-allowed' : ''}`}
             disabled={currentStepIndex <= 0 || isSorting}
           >
             前のステップ
@@ -198,11 +379,10 @@ const SortVisualization = () => {
 
           <button
             onClick={() => setIsSorting(!isSorting)}
-            className={`px-4 py-2 ${
-              isSorting
+            className={`px-4 py-2 ${isSorting
                 ? "bg-yellow-500 hover:bg-yellow-600"
                 : "bg-blue-500 hover:bg-blue-600"
-            } text-white rounded transition`}
+              } text-white rounded transition ${(currentStepIndex < 0 || currentStepIndex >= sortSteps.length - 1) ? 'opacity-50 cursor-not-allowed' : ''}`}
             disabled={
               currentStepIndex < 0 || currentStepIndex >= sortSteps.length - 1
             }
@@ -212,7 +392,7 @@ const SortVisualization = () => {
 
           <button
             onClick={nextStep}
-            className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition"
+            className={`px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition ${(currentStepIndex >= sortSteps.length - 1 || isSorting) ? 'opacity-50 cursor-not-allowed' : ''}`}
             disabled={currentStepIndex >= sortSteps.length - 1 || isSorting}
           >
             次のステップ
