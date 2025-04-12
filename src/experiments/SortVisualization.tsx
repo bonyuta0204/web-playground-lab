@@ -74,13 +74,13 @@ const generateInsertionSortSteps = (arr: number[]): SortSteps => {
     while (j >= 0 && tempArray[j] > key) {
       tempArray[j + 1] = tempArray[j];
       j--;
-      
+
       // Add intermediate step
       steps.push([...tempArray]);
     }
 
     tempArray[j + 1] = key;
-    
+
     // Add this step to our steps array if we haven't already
     if (j + 1 !== i) {
       steps.push([...tempArray]);
@@ -150,17 +150,20 @@ const sortingAlgorithms: SortAlgorithm[] = [
   {
     name: "バブルソート",
     function: generateBubbleSortSteps,
-    description: "隣接する要素を比較し、順序が正しくない場合は入れ替える単純なアルゴリズム",
+    description:
+      "隣接する要素を比較し、順序が正しくない場合は入れ替える単純なアルゴリズム",
   },
   {
     name: "選択ソート",
     function: generateSelectionSortSteps,
-    description: "未ソート部分から最小の要素を選択し、ソート済み部分の末尾に配置するアルゴリズム",
+    description:
+      "未ソート部分から最小の要素を選択し、ソート済み部分の末尾に配置するアルゴリズム",
   },
   {
     name: "挿入ソート",
     function: generateInsertionSortSteps,
-    description: "ソート済み部分に新しい要素を適切な位置に挿入していくアルゴリズム",
+    description:
+      "ソート済み部分に新しい要素を適切な位置に挿入していくアルゴリズム",
   },
   {
     name: "クイックソート",
@@ -171,11 +174,16 @@ const sortingAlgorithms: SortAlgorithm[] = [
 
 // generate random array
 const buildRandomArray = (size: number) => {
-  const array = [];
-  for (let i = 0; i < size; i++) {
-    array.push(Math.floor(Math.random() * 100));
+  const elements = Array.from<number>({ length: size }).fill(0);
+  for (let i = 1; i < elements.length; i++) {
+    elements[i] = elements[i - 1] + 1;
   }
-  return array;
+  // shuffle array
+  for (let i = elements.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [elements[i], elements[j]] = [elements[j], elements[i]];
+  }
+  return elements;
 };
 
 const SortVisualization = () => {
@@ -190,7 +198,9 @@ const SortVisualization = () => {
   // Start the sorting visualization
   const startSorting = () => {
     console.log("Starting sorting visualization");
-    const steps = sortingAlgorithms[selectedAlgorithm].function(buildRandomArray(arraySize));
+    const steps = sortingAlgorithms[selectedAlgorithm].function(
+      buildRandomArray(arraySize)
+    );
     setSortSteps(steps);
     setCurrentStepIndex(0);
     setIsSorting(true);
@@ -316,14 +326,14 @@ const SortVisualization = () => {
             <h3 className="text-lg font-semibold mb-2">アルゴリズム選択</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {sortingAlgorithms.map((algorithm, index) => (
-                <div 
-                  key={index} 
+                <div
+                  key={index}
                   onClick={() => !isSorting && setSelectedAlgorithm(index)}
-                  className={`p-3 rounded-md cursor-pointer transition ${selectedAlgorithm === index 
-                    ? 'bg-blue-500 text-white' 
-                    : 'bg-gray-200 hover:bg-gray-300'} ${
-                    isSorting ? 'opacity-50 cursor-not-allowed' : ''
-                  }`}
+                  className={`p-3 rounded-md cursor-pointer transition ${
+                    selectedAlgorithm === index
+                      ? "bg-blue-500 text-white"
+                      : "bg-gray-200 hover:bg-gray-300"
+                  } ${isSorting ? "opacity-50 cursor-not-allowed" : ""}`}
                 >
                   <div className="font-bold">{algorithm.name}</div>
                   <div className="text-sm">{algorithm.description}</div>
@@ -333,16 +343,22 @@ const SortVisualization = () => {
           </div>
 
           <div className="bg-white p-4 rounded-lg shadow-md mb-4">
-            <h3 className="text-lg font-semibold mb-2">配列サイズ: {arraySize}</h3>
+            <h3 className="text-lg font-semibold mb-2">
+              配列サイズ: {arraySize}
+            </h3>
             <input
               type="range"
               min="10"
               max="100"
               step="5"
               value={arraySize}
-              onChange={(e) => !isSorting && setArraySize(parseInt(e.target.value))}
+              onChange={(e) =>
+                !isSorting && setArraySize(parseInt(e.target.value))
+              }
               disabled={isSorting}
-              className={`w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer ${isSorting ? 'opacity-50' : ''}`}
+              className={`w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer ${
+                isSorting ? "opacity-50" : ""
+              }`}
             />
           </div>
         </div>
@@ -354,7 +370,9 @@ const SortVisualization = () => {
         <div className="flex flex-wrap gap-4 mb-6">
           <button
             onClick={startSorting}
-            className={`px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition ${isSorting ? 'opacity-50 cursor-not-allowed' : ''}`}
+            className={`px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition ${
+              isSorting ? "opacity-50 cursor-not-allowed" : ""
+            }`}
             disabled={isSorting}
           >
             ソート開始
@@ -371,7 +389,11 @@ const SortVisualization = () => {
         <div className="flex flex-wrap gap-4 mb-6">
           <button
             onClick={prevStep}
-            className={`px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition ${(currentStepIndex <= 0 || isSorting) ? 'opacity-50 cursor-not-allowed' : ''}`}
+            className={`px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition ${
+              currentStepIndex <= 0 || isSorting
+                ? "opacity-50 cursor-not-allowed"
+                : ""
+            }`}
             disabled={currentStepIndex <= 0 || isSorting}
           >
             前のステップ
@@ -379,10 +401,15 @@ const SortVisualization = () => {
 
           <button
             onClick={() => setIsSorting(!isSorting)}
-            className={`px-4 py-2 ${isSorting
+            className={`px-4 py-2 ${
+              isSorting
                 ? "bg-yellow-500 hover:bg-yellow-600"
                 : "bg-blue-500 hover:bg-blue-600"
-              } text-white rounded transition ${(currentStepIndex < 0 || currentStepIndex >= sortSteps.length - 1) ? 'opacity-50 cursor-not-allowed' : ''}`}
+            } text-white rounded transition ${
+              currentStepIndex < 0 || currentStepIndex >= sortSteps.length - 1
+                ? "opacity-50 cursor-not-allowed"
+                : ""
+            }`}
             disabled={
               currentStepIndex < 0 || currentStepIndex >= sortSteps.length - 1
             }
@@ -392,7 +419,11 @@ const SortVisualization = () => {
 
           <button
             onClick={nextStep}
-            className={`px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition ${(currentStepIndex >= sortSteps.length - 1 || isSorting) ? 'opacity-50 cursor-not-allowed' : ''}`}
+            className={`px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition ${
+              currentStepIndex >= sortSteps.length - 1 || isSorting
+                ? "opacity-50 cursor-not-allowed"
+                : ""
+            }`}
             disabled={currentStepIndex >= sortSteps.length - 1 || isSorting}
           >
             次のステップ
