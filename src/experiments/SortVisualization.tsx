@@ -268,10 +268,12 @@ const SortVisualization = () => {
       .append("g")
       .attr("transform", `translate(${margin.left},${margin.top})`);
 
+    const xValues = d3.range(currentArray.length);
+
     // Set up scales
     const xScale = d3
-      .scaleBand()
-      .domain(d3.range(currentArray.length))
+      .scaleBand<number>()
+      .domain(xValues)
       .range([0, innerWidth])
       .padding(0.1);
 
